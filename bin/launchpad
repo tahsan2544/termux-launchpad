@@ -1,0 +1,68 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Termux Launchpad - one dispatcher powering the installed shortcut commands.
+set -u
+
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || printf '%s' "${BASH_SOURCE[0]}")"
+INSTALL_DIR="$(cd "$(dirname "$SCRIPT_PATH")/.." 2>/dev/null && pwd -P)"
+PROJECTS_DIR="$HOME/Projects"
+BACKUPS_DIR="$HOME/ProjectBackups"
+SHARED_PROJECTS_DIR="$HOME/storage/shared/Projects"
+LOG_DIR="$HOME/.termux-launchpad/logs"
+OMNI_PID_FILE="$LOG_DIR/omniroute.pid"
+COMMAND="$(basename "$0")"
+if [ "$COMMAND" = "launchpad" ] && [ "${1:-}" != "" ]; then
+  COMMAND="$1"
+  shift
+fi
+
+if [ -t 1 ]; then
+  C_RESET=$'\033[0m'; C_BLUE=$'\033[1;34m'; C_CYAN=$'\033[1;36m'
+  C_GREEN=$'\033[1;32m'; C_YELLOW=$'\033[1;33m'; C_RED=$'\033[1;31m'
+else
+  C_RESET=''; C_BLUE=''; C_CYAN=''; C_GREEN=''; C_YELLOW=''; C_RED=''
+fi
+
+# Feature libraries are separated so maintainers can update one task at a time.
+for library in common.sh projects.sh ai-tools.sh git-tools.sh system.sh menu.sh; do
+  source "$INSTALL_DIR/lib/$library"
+done
+
+case "$COMMAND" in
+  launchpad) cmd_launchpad;;
+  helpme) cmd_helpme;;
+  dashboard) cmd_dashboard;;
+  linux|oc) cmd_oc "$@";;
+  debian) cmd_debian;;
+  ocinstall) cmd_ocinstall;;
+  ocversion) cmd_ocversion;;
+  omniinstall) cmd_omniinstall;;
+  omni) cmd_omni "$@";;
+  omnibg) cmd_omnibg;;
+  omnistop) cmd_omnistop;;
+  omnistatus) cmd_omnistatus;;
+  omniweb) cmd_omniweb;;
+  omniconnect) cmd_omniconnect;;
+  projects) cmd_projects;;
+  sharedprojects) cmd_sharedprojects;;
+  newproject) cmd_newproject "$@";;
+  project) cmd_project "$@";;
+  projectlist) cmd_projectlist;;
+  backup) cmd_backup "$@";;
+  gclone) cmd_gclone "$@";;
+  gsave) cmd_gsave "$@";;
+  gpush) cmd_gpush;;
+  gpull) cmd_gpull;;
+  gstatus) cmd_gstatus;;
+  glog) cmd_glog;;
+  gdiff) cmd_gdiff;;
+  gremote) cmd_gremote;;
+  update) cmd_update;;
+  dupdate) cmd_dupdate;;
+  dupgrade) cmd_duupgrade;;
+  dstatus) cmd_dstatus;;
+  lpdoctor) cmd_lpdoctor;;
+  lpupdate) cmd_lpupdate;;
+  lpversion) cmd_lpversion;;
+  uninstall-launchpad) cmd_uninstall_launchpad;;
+  *) err "Unknown command: $COMMAND"; say "Run helpme for available commands."; exit 2;;
+esac

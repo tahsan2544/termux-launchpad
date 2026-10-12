@@ -1,0 +1,18 @@
+name: Shell checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Check shell syntax and versioning behavior
+        run: |
+          bash scripts/self-test.sh
+          shellcheck -S error scripts/*.sh lib/*.sh bin/launchpad .githooks/pre-commit tests/*.sh

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [ "${TERMUX_LAUNCHPAD_SKIP_VERSION_BUMP:-0}" = "1" ]; then exit 0; fi
+ROOT="$(git rev-parse --show-toplevel)"
+VERSION_FILE="$ROOT/VERSION"
+[ -f "$VERSION_FILE" ] || { echo "VERSION file is missing; refusing to create a versioned commit." >&2; exit 1; }
+OLD="$(tr -d '[:space:]' < "$VERSION_FILE")"
+NEW="$(bash "$ROOT/scripts/bump-version.sh" "$VERSION_FILE")"
+git -C "$ROOT" add -- VERSION
+echo "Termux Launchpad version: $OLD -> $NEW"

@@ -1,0 +1,31 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa
+id_ed25519
+credentials.json
+secrets.*
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Runtime logs and backups
+*.log
+*.tar.gz
+*.zip
+ProjectBackups/
+.omniroute/
+
+# Temporary files
+*.tmp
+*.bak
+__pycache__/
+*.py[cod]
